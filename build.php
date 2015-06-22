@@ -52,6 +52,7 @@ require PATH_ZABBIX.'/include/classes/core/CRegistryFactory.php';
 require PATH_ZABBIX.'/include/classes/api/CApiServiceFactory.php';
 require PATH_ZABBIX.'/include/classes/api/CApiService.php';
 
+
 class ZabbixApiClassMap extends CApiServiceFactory {
   public function getClassMap() {
     $classMap = $this->objects;
@@ -64,6 +65,11 @@ function __autoload($className) {
   require PATH_ZABBIX_API_CLASSES_DIRECTORY.'/'.$className.'.php';
 }
 
+require PATH_ZABBIX.'/include/classes/db/DB.php';
+require PATH_ZABBIX.'/include/gettextwrapper.inc.php';
+require PATH_ZABBIX.'/include/events.inc.php';
+require PATH_ZABBIX.'/include/func.inc.php';
+
 $apiArray = array();
 $apiClassMap = new ZabbixApiClassMap();
 
@@ -72,10 +78,17 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   $apiArray[$resource] = array();
 
   // create new reflection class
-  $reflection = new ReflectionClass($class);
+  $ref = new ReflectionClass($class);
+
+  $obj = $ref->newInstance();
+  $refProp = new ReflectionProperty($class, 'getOptions');
+  $refProp->setAccessible(true); // getOptions is protected.
+  $getOptions = $refProp->getValue($obj);
+  $apiArray[$resource]['getOptions'] = $getOptions;
 
   // loop through defined methods
-  foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC & ~ReflectionMethod::IS_STATIC) as $method) {
+  $apiArray[$resource]['methods'] = array();
+  foreach($ref->getMethods(ReflectionMethod::IS_PUBLIC & ~ReflectionMethod::IS_STATIC) as $method) {
     // add action to API array
     if( $method->class != 'CZBXAPI'
       && !($resource == 'user' && $method->name == 'login')
@@ -87,7 +100,7 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
       && !($method->name == 'pkOption')
       && !($method->name == 'tableName')
     ) {
-      $apiArray[$resource][] = $method->name;
+      $apiArray[$resource]['methods'][] = $method->name;
     }
   }
 }
