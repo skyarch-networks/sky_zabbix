@@ -83,7 +83,7 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   $obj = $ref->newInstance();
   $refProp = new ReflectionProperty($class, 'getOptions');
   $refProp->setAccessible(true); // getOptions is protected.
-  $getOptions = $refProp->getValue($obj);
+  $getOptions = array_keys($refProp->getValue($obj));
   $apiArray[$resource]['getOptions'] = $getOptions;
 
   // loop through defined methods
