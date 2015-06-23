@@ -5,3 +5,4 @@ module Zab
 end
 
 require 'zab/jsonrpc'
+require 'zab/client'
