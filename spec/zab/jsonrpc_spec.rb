@@ -7,7 +7,7 @@ describe Zab::Jsonrpc do
     let(:req){client.post('user.login', params)}
 
     it 'should be success' do
-      expect(req).to be_a Net::HTTPSuccess
+      req
     end
   end
 end
