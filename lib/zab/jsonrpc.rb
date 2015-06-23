@@ -33,21 +33,36 @@ class Zab::Jsonrpc
   end
 
   # XXX: エラー処理はこれでいい?
-  # TODO: notification がある場合、直感に反する返り方をすると思う。idを見て返したい
+  # @example Return values.
+  #   rpc.batch(
+  #     rpc.build('a', 'A'),
+  #     rpc.build('b', 'B', notification: true),
+  #     rpc.build('c', 'Invalid Param'),
+  #   ) # => [{value: 'response of A'}, nil, Jsonrpc::Error]
   # @param [Array<Hash>] buildeds is Array of result of 'build' method.
-  # @return [Array<Any|Error>]
+  # @return [Array<Any|Error|nil>]
   def batch(buildeds)
     uri = URI.parse(@uri)
     req  = req_gen(uri, buildeds)
     resp = do_req(uri, req)
     body = JSON.parse(resp.body)
-    body.map do |r|
-      if r['error']
-        Error.new(r)
-      else
-        r['result']
-      end
+
+    result = []
+    buildeds.each do |b|
+      id = b[:id]
+      a = body.find{|x|x['id'] == id}
+
+      r =
+        if a.nil?
+          nil
+        elsif a['error']
+          Error.new(a)
+        else
+          a['result']
+        end
+      result.push(r)
     end
+    return result
   end
 
   # @param [String] method is json-rpc method name.

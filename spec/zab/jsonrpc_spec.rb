@@ -24,6 +24,7 @@ describe Zab::Jsonrpc do
     let(:buildeds){[
       client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
       client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
+      client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}, notification: true),
     ]}
 
     let(:batch){client.batch(buildeds)}
