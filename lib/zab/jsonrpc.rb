@@ -25,6 +25,8 @@ class Zab::Jsonrpc
     req  = req_gen(uri, builded)
     resp = do_req(uri, req)
 
+    return nil unless builded[:id] # when notification
+
     # Parse and error handling
     body = JSON.parse(resp.body)
     raise Error.new(body) if body['error']

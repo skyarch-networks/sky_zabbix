@@ -11,6 +11,13 @@ describe Zab::Jsonrpc do
       req
     end
 
+    context 'when notification' do
+      let(:req){client.post('user.login', params, notification: true)}
+      it 'should be nil' do
+        expect(req).to be_nil
+      end
+    end
+
     context 'when invalid method' do
       let(:req){client.post('hogehoge.fugafdafs', params)}
 
