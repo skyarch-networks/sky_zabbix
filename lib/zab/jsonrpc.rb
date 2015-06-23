@@ -4,13 +4,6 @@ require 'uri'
 
 class Zab::Jsonrpc
   VERSION = '2.0' # json-rpc version
-  class Error < StandardError
-    def initialize(body)
-      @error = JSON.parse(body)['error']
-      super(@error['message'])
-    end
-    attr_reader :error
-  end
 
   def initialize(uri)
     @uri = uri
@@ -25,23 +18,24 @@ class Zab::Jsonrpc
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = uri.scheme == 'https'
     resp = http.request(req)
-    # TODO: parse
+    body = JSON.parse(resp.body)
     case resp
     when Net::HTTPSuccess
-      return JSON.parse(resp.body)['result']
+      raise Error.new(body) if body['error']
+      return body['result']
     else
-      raise Error.new(resp.body)
+      raise Error.new(body)
     end
   end
 
   private
 
-  def body(method, params, id: true)
+  def body(method, params, id: true, auth: nil)
     res = {
       jsonrpc: VERSION,
       method:  method,
       params:  params,
-      auth: nil,
+      auth: auth,
     }
     res['id'] = id_gen if id
 
@@ -52,3 +46,5 @@ class Zab::Jsonrpc
     return rand(10**12)
   end
 end
+
+require_relative 'jsonrpc/errors'

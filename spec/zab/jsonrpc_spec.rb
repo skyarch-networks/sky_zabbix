@@ -9,5 +9,13 @@ describe Zab::Jsonrpc do
     it 'should be success' do
       req
     end
+
+    context 'when invalid method' do
+      let(:req){client.post('hogehoge.fugafdafs', params)}
+
+      it 'should raise error' do
+        expect{req}.to raise_error(Zab::Jsonrpc::Error)
+      end
+    end
   end
 end
