@@ -91,8 +91,6 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   foreach($ref->getMethods(ReflectionMethod::IS_PUBLIC & ~ReflectionMethod::IS_STATIC) as $method) {
     // add action to API array
     if( $method->class != 'CZBXAPI'
-      && !($resource == 'user' && $method->name == 'login')
-      && !($resource == 'user' && $method->name == 'logout')
       && !$method->isConstructor()
       && !$method->isDestructor()
       && !$method->isAbstract()
