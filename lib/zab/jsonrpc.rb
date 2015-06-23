@@ -28,6 +28,7 @@ class Zab::Jsonrpc
     end
   end
 
+
   private
 
   def body(method, params, id: true, auth: nil)
@@ -35,7 +36,7 @@ class Zab::Jsonrpc
       jsonrpc: VERSION,
       method:  method,
       params:  params,
-      auth: auth,
+      auth:    auth,
     }
     res['id'] = id_gen if id
 
