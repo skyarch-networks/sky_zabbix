@@ -20,7 +20,7 @@ describe Zab::Client::User do
   describe '#login' do
     it 'should be success' do
       resp = user.login(user: ZABBIX_USER, password: ZABBIX_PASS)
-      expect(resp).to be_a Net::HTTPSuccess
+      expect(resp).to be_a String
     end
   end
 end

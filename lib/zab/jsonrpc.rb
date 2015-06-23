@@ -29,7 +29,7 @@ class Zab::Jsonrpc
   end
 
   # XXX: エラー処理はこれでいい?
-  # TODO: notification がある場合、直感に反する返り方をすると思う
+  # TODO: notification がある場合、直感に反する返り方をすると思う。idを見て返したい
   # @param [Array<Hash>] buildeds is Array of result of 'build' method.
   # @return [Array<Any|Error>]
   def batch(buildeds)
