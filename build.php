@@ -28,7 +28,8 @@
 define('PATH_ZABBIX', getenv('PATH_ZABBIX'));
 
 if (!is_dir(PATH_ZABBIX)) {
-  die('ERROR: Zabbix path "'.PATH_ZABBIX.'" is not a directory! Please check the PATH_ZABBIX environment.');
+  fputs(STDERR, 'ERROR: Zabbix path "'.PATH_ZABBIX.'" is not a directory! Please check the PATH_ZABBIX environment.');
+  die(1);
 }
 
 
@@ -37,13 +38,15 @@ require PATH_ZABBIX . '/include/defines.inc.php';
 
 define('PATH_ZABBIX_API_CLASS_FILE', PATH_ZABBIX.'/include/classes/api/API.php');
 if(!file_exists(PATH_ZABBIX_API_CLASS_FILE)) {
-  die('ERROR: API class file "'.PATH_ZABBIX_API_CLASS_FILE.'" not found! Please check the PATH_ZABBIX_API_CLASS_FILE configuration constant');
+  fputs(STDERR, 'ERROR: API class file "'.PATH_ZABBIX_API_CLASS_FILE.'" not found! Please check the PATH_ZABBIX_API_CLASS_FILE configuration constant');
+  die(1);
 }
 
 
 define('PATH_ZABBIX_API_CLASSES_DIRECTORY', PATH_ZABBIX.'/include/classes/api/services');
 if(!is_dir(PATH_ZABBIX_API_CLASSES_DIRECTORY)) {
-  die('ERROR: API class directory "'.PATH_ZABBIX_API_CLASSES_DIRECTORY.'" not found!');
+  fputs(STDERR, 'ERROR: API class directory "'.PATH_ZABBIX_API_CLASSES_DIRECTORY.'" not found!');
+  die(1);
 }
 
 
