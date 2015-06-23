@@ -19,6 +19,11 @@ class Zab::Client
     raise "Should use method of sub class!" unless zbx_class
     @client.post("#{zbx_class}.#{method}", params)
   end
+
+  def build(method, params)
+    raise "Should use method of sub class!" unless zbx_class
+    @client.build("#{zbx_class}.#{method}", params)
+  end
 end
 
 require_relative 'client/generate'

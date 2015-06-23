@@ -13,6 +13,10 @@ methods.each do |name, v|
       define_method(method) do |params|
         query(method, params)
       end
+
+      define_method("build_#{method}") do |params|
+        build(method, params)
+      end
     end
 
     Zab::Client.__send__(:define_method, name) do 
