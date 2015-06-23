@@ -9,8 +9,12 @@ class Zab::Jsonrpc
     @uri = uri
   end
 
-  def post(method, params, notification: false)
-    request(build(method, params, notification: notification))
+  # @param [String] method is json-rpc method name.
+  # @param [Any?] params is json-rpc parameters.
+  # @param [Boolean] notification
+  # @param [String|NilClass] auth is authorization token.
+  def post(method, params, notification: false, auth: nil)
+    request(build(method, params, notification: notification, auth: auth))
   end
 
   # @param [Hash{String => Any}] builded is result of 'build' method.
