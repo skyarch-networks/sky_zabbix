@@ -13,13 +13,13 @@ methods.each do |name, v|
     v[:methods].each do |method|
       # Generate query method.
       # Example: user.login()
-      define_method(method) do |params|
+      define_method(method) do |params={}|
         _query(method, params)
       end
 
       # Generate build method. For batch request
       # Example: user.build_login()
-      define_method("build_#{method}") do |params|
+      define_method("build_#{method}") do |params={}|
         _build(method, params)
       end
     end
