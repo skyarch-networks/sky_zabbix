@@ -30,7 +30,7 @@ class Zab::Jsonrpc
 
     # Parse and error handling
     body = JSON.parse(resp.body)
-    raise Error.new(body) if body['error']
+    raise Error.create(body) if body['error']
 
     return body['result']
   end
