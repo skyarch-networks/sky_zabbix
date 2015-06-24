@@ -1,7 +1,12 @@
 class Zab::Client
-  def initialize(uri, client = nil, logger: nil)
+
+  # @param [String] uri is URI of Zabbix Server API endpoint.
+  # @param [Logger] logger is a Logger.
+  # @example initialize
+  #   z = Zab::Client.new('http://example.com/zabbix/api_jsonrpc.php')
+  def initialize(uri, logger: nil)
     @uri = uri
-    @client = client || Zab::Jsonrpc.new(@uri, logger: logger)
+    @client = Zab::Jsonrpc.new(@uri, logger: logger)
   end
 
   # @param [Array<Hash>] requests are Hash created by build_* method.

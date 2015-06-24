@@ -19,7 +19,7 @@ class Zab::Jsonrpc
   end
 
   # @param [Hash{String => Any}] builded is result of 'build' method.
-  # @return [Any?] return response['result']
+  # @return [Any?] return result of response
   def request(builded)
     uri = URI.parse(@uri)
 
