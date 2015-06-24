@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file based PhpZabbixApi/build.php.
+ *
  * @file    build.php
  *
  * @brief   PHP script to build the PhpZabbixApi class(es).
@@ -24,6 +26,15 @@
  */
 
 // Support Zabbix 2.4 or later.
+
+function getProp($class, $prop_name) {
+  $ref = new ReflectionClass($class);
+  $refProp = new ReflectionProperty($class, $prop_name);
+
+  $obj = $ref->newInstance();
+  $refProp->setAccessible(true);
+  return $refProp->getValue($obj);
+}
 
 define('PATH_ZABBIX', getenv('PATH_ZABBIX'));
 
@@ -80,15 +91,12 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   // add resource to API array
   $apiArray[$resource] = array();
 
+  $apiArray[$resource]['getOptions'] = array_keys(getProp($class, 'getOptions'));
+  $apiArray[$resource]['pk'] =         getProp($class, 'pk');
+
+
   // create new reflection class
   $ref = new ReflectionClass($class);
-
-  $obj = $ref->newInstance();
-  $refProp = new ReflectionProperty($class, 'getOptions');
-  $refProp->setAccessible(true); // getOptions is protected.
-  $getOptions = array_keys($refProp->getValue($obj));
-  $apiArray[$resource]['getOptions'] = $getOptions;
-
   // loop through defined methods
   $apiArray[$resource]['methods'] = array();
   foreach($ref->getMethods(ReflectionMethod::IS_PUBLIC & ~ReflectionMethod::IS_STATIC) as $method) {
