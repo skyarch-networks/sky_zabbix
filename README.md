@@ -22,6 +22,9 @@ Or install it yourself as:
 
 ```ruby
 client = Zab.new(ZABBIX_URL)
+client.login(ZABBIX_USER, ZABBIX_PASS)
+
+client.host.get()
 ```
 
 ## Development

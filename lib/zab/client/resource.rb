@@ -1,3 +1,4 @@
+# @abstract
 class Zab::Client::Resource
   # @return [String]
   def self._zbx_class
@@ -5,17 +6,24 @@ class Zab::Client::Resource
   end
 
 
+  # @param [String] uri is URI of Zabbix Server.
+  # @param [Zab::Jsonrpc] client
   def initialize(uri, client)
+    raise "Should use method of sub class!" unless _zbx_class
     @uri = uri
     @client = client
   end
 
   private
+  # @param [String] method is method name. ex) get, create, delete ...
+  # @param [Any] params is parameters.
   def _query(method, params)
     raise "Should use method of sub class!" unless _zbx_class
     @client.post("#{_zbx_class}.#{method}", params)
   end
 
+  # @param [String] method is method name. ex) get, create, delete ...
+  # @param [Any] params is parameters.
   def _build(method, params)
     raise "Should use method of sub class!" unless _zbx_class
     @client.build("#{_zbx_class}.#{method}", params)

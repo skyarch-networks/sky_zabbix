@@ -84,10 +84,14 @@ class Zab::Jsonrpc
 
 
   private
+
+  # @return [Integer] random ID.
   def id_gen
     return rand(10**12)
   end
 
+  # @param [URI::HTTP] uri is a URI of Zabbix Server.
+  # @param [Hash|Array] body is a request body.
   def do_req(uri, body)
     start_time = Time.now # for logging
 
@@ -110,6 +114,9 @@ class Zab::Jsonrpc
   end
 
   # TODO: log level
+  # @param [Time] start_time
+  # @param [Hash|Array] body is request body.
+  # @param [Net::HTTPResponse] resp
   def logging_request(start_time, body, resp)
     return unless @logger
 
