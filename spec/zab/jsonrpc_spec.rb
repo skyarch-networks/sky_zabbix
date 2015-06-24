@@ -67,4 +67,38 @@ describe Zab::Jsonrpc do
       end
     end
   end
+
+  describe '#logging_request' do
+    let(:logger){Struct.new(:v){def info(msg);self.v = msg;end}.new}
+    let(:client){Zab::Jsonrpc.new(ZABBIX_URL, logger: logger)}
+    let(:params){{user: ZABBIX_USER, password: ZABBIX_PASS}}
+    let(:method){'user.login'}
+    let(:req){client.post(method, params)}
+
+    it 'should be logging' do
+      req
+      expect(logger.v).to be_a String
+      expect(logger.v).to be_include method
+      expect(logger.v).to be_include params.to_s
+    end
+
+    context 'when batch request' do
+      let(:buildeds){[
+        client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
+        client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
+        client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}, notification: true),
+      ]}
+
+      let(:req){client.batch(buildeds)}
+
+      it 'should be logging' do
+        req
+        expect(logger.v).to be_a String
+        buildeds.each do |b|
+          expect(logger.v).to be_include b[:method]
+          expect(logger.v).to be_include b[:params].to_s
+        end
+      end
+    end
+  end
 end

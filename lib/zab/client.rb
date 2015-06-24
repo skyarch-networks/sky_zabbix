@@ -11,9 +11,9 @@ class Zab::Client
     return self.class.zbx_class
   end
 
-  def initialize(uri, client = nil)
+  def initialize(uri, client = nil, logger: nil)
     @uri = uri
-    @client = client || Zab::Jsonrpc.new(@uri)
+    @client = client || Zab::Jsonrpc.new(@uri, logger: logger)
   end
 
   # @param [Array<Hash>] requests are Hash created by build_* method.

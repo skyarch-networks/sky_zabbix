@@ -5,8 +5,9 @@ require 'uri'
 class Zab::Jsonrpc
   VERSION = '2.0' # json-rpc version
 
-  def initialize(uri)
+  def initialize(uri, logger: nil)
     @uri = uri
+    @logger = logger
   end
 
   # @param [String] method is json-rpc method name.
@@ -88,6 +89,8 @@ class Zab::Jsonrpc
   end
 
   def do_req(uri, body)
+    start_time = Time.now # for logging
+
     # Create request
     req = Net::HTTP::Post.new(uri.path)
     req['Content-Type'] = 'application/json-rpc'
@@ -101,6 +104,25 @@ class Zab::Jsonrpc
       raise Error(resp.body)
     end
     return resp
+
+  ensure
+    logging_request(start_time, body, resp)
+  end
+
+  # TODO: log level
+  def logging_request(start_time, body, resp)
+    return unless @logger
+
+    sec = Time.now - start_time
+    msg_body =
+      if body.is_a? Array # when batch
+        y = body.map{|x| "#{x[:method]}(#{x[:params]})"}
+        "Batch Request [#{y.join(', ')}]"
+      else
+        "#{body[:method]}(#{body[:params]})"
+      end
+
+    @logger.info("[Zab #{resp.code} #{sec}] #{msg_body}")
   end
 end
 
