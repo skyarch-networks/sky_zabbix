@@ -15,6 +15,11 @@ class Zab::Client
     @client.token = self.user.login(user: user, password: pass)
   end
 
+  def logout
+    self.user.logout()
+    @client.token = nil
+  end
+
   # @param [Array<Hash>] requests are Hash created by build_* method.
   def batch(*requests)
     return @client.batch(requests)
