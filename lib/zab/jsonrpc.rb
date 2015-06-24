@@ -22,8 +22,7 @@ class Zab::Jsonrpc
   def request(builded)
     uri = URI.parse(@uri)
 
-    req  = req_gen(uri, builded)
-    resp = do_req(uri, req)
+    resp = do_req(uri, builded)
 
     return nil unless builded[:id] # when notification
 
@@ -45,8 +44,7 @@ class Zab::Jsonrpc
   # @return [Array<Any|Error|nil>]
   def batch(buildeds)
     uri = URI.parse(@uri)
-    req  = req_gen(uri, buildeds)
-    resp = do_req(uri, req)
+    resp = do_req(uri, buildeds)
     body = JSON.parse(resp.body)
 
     result = []
@@ -89,14 +87,13 @@ class Zab::Jsonrpc
     return rand(10**12)
   end
 
-  def req_gen(uri, body)
+  def do_req(uri, body)
+    # Create request
     req = Net::HTTP::Post.new(uri.path)
     req['Content-Type'] = 'application/json-rpc'
     req.body = JSON.generate(body)
-    return req
-  end
 
-  def do_req(uri, req)
+    # Do HTTP Request
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = uri.scheme == 'https'
     resp = http.request(req) # TODO: ここでのエラーハンドリング
