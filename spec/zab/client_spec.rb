@@ -9,8 +9,19 @@ describe Zab::Client do
     end
   end
 
-  describe '#query' do
-    #TODO
+  describe '#login' do
+    let(:login){client.login(ZABBIX_USER, ZABBIX_PASS)}
+
+    before{login}
+
+    it 'should set token' do
+      expect(client.instance_variable_get(:@client).token).to be_a String
+    end
+
+    it 'should be able to get users' do
+      res = client.user.get()
+      expect(res).to be_a Array
+    end
   end
 
   describe '#batch' do
@@ -29,6 +40,7 @@ describe Zab::Client do
   end
 end
 
+# TODO: move spec
 describe Zab::Client::User do
   let(:user){Zab::Client.new(ZABBIX_URL).user}
 

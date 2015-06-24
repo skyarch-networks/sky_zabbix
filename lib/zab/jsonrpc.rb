@@ -10,12 +10,13 @@ class Zab::Jsonrpc
     @logger = logger
   end
 
+  attr_accessor :token
+
   # @param [String] method is json-rpc method name.
   # @param [Any?] params is json-rpc parameters.
   # @param [Boolean] notification
-  # @param [String|NilClass] auth is authorization token.
-  def post(method, params, notification: false, auth: nil)
-    request(build(method, params, notification: notification, auth: auth))
+  def post(method, params, notification: false)
+    request(build(method, params, notification: notification))
   end
 
   # @param [Hash{String => Any}] builded is result of 'build' method.
@@ -69,13 +70,12 @@ class Zab::Jsonrpc
   # @param [String] method is json-rpc method name.
   # @param [Any?] params is json-rpc parameters.
   # @param [Boolean] notification
-  # @param [String|NilClass] auth is authorization token.
-  def build(method, params, notification: false, auth: nil)
+  def build(method, params, notification: false)
     res = {
       jsonrpc: VERSION,
       method:  method,
       params:  params,
-      auth:    auth,
+      auth:    @token,
     }
     res[:id] = id_gen unless notification
 
