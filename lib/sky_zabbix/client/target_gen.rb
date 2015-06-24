@@ -24,6 +24,11 @@ methods.each do |name, v|
       end
     end
 
+    # primary key
+    define_method(:pk) do
+      return v[:pk]
+    end
+
     # Generate getter method.
     # Example: client.user
     SkyZabbix::Client.__send__(:define_method, name) do

@@ -30,4 +30,22 @@ describe SkyZabbix::Client::User do
       expect(resp[:params]).to eq params
     end
   end
+
+  describe 'get_id' do
+    let(:params){{alias: ZABBIX_USER}}
+    subject{user.get_id(params)}
+
+    before do
+      token = user.login(user: ZABBIX_USER, password: ZABBIX_PASS)
+      # TODO: Refactor
+      user.instance_variable_get(:@client).token = token
+    end
+
+    it {is_expected.to be_a String}
+  end
+
+  describe '#pk' do
+    subject{user.pk}
+    it {is_expected.to be_a String}
+  end
 end

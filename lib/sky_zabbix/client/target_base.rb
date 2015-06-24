@@ -14,6 +14,15 @@ class SkyZabbix::Client::TargetBase
     @client = client
   end
 
+  # @param [Hash] filter
+  def get_id(filter)
+    params = {
+      filter: filter,
+      output: 'extend',
+    }
+    return _query('get', params).first[pk]
+  end
+
   private
   # @param [String] method is method name. ex) get, create, delete ...
   # @param [Any] params is parameters.
