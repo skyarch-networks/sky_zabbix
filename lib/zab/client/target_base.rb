@@ -1,5 +1,5 @@
 # @abstract
-class Zab::Client::Resource
+class Zab::Client::TargetBase
   # @return [String]
   def self._zbx_class
     return @class

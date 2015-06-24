@@ -31,5 +31,5 @@ class Zab::Client
   end
 end
 
-require_relative 'client/resource'
-require_relative 'client/resource_gen'
+require_relative 'client/target_base'
+require_relative 'client/target_gen'

@@ -6,7 +6,7 @@ methods.each do |name, v|
   class_name = name[0].upcase + name[1..-1] # host => Host
 
   # Generate Class
-  Zab::Client.const_set(class_name, Class.new(Zab::Client::Resource) do |klass|
+  Zab::Client.const_set(class_name, Class.new(Zab::Client::TargetBase) do |klass|
     @class = name
 
     # TODO: getOptions
