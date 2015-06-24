@@ -10,7 +10,22 @@ describe Zab::Client do
   end
 
   describe '#query' do
+    #TODO
+  end
 
+  describe '#batch' do
+    let(:params){{user: ZABBIX_USER, password: ZABBIX_PASS}}
+    let(:user){Zab::Client.new(ZABBIX_URL).user}
+    let(:requests){[user.build_login(params), user.build_login(params)]}
+    let(:batch){client.batch(*requests)}
+
+    it 'should return response' do
+      expect(batch.size).to eq requests.size
+      batch.each do |resp|
+        expect(resp).not_to be_nil
+        expect(resp).not_to be_a Zab::Jsonrpc::Error
+      end
+    end
   end
 end
 

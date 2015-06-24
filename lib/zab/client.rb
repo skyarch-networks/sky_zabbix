@@ -1,10 +1,12 @@
 class Zab::Client
   @class = nil # Should override by sub class.
 
+  # @return [String]
   def self.zbx_class
     return @class
   end
 
+  # @return [String]
   def zbx_class
     return self.class.zbx_class
   end
@@ -12,6 +14,11 @@ class Zab::Client
   def initialize(uri, client = nil)
     @uri = uri
     @client = client || Zab::Jsonrpc.new(@uri)
+  end
+
+  # @param [Array<Hash>] requests are Hash created by build_* method.
+  def batch(*requests)
+    return @client.batch(requests)
   end
 
   private
