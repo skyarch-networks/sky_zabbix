@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'zab/version'
+require 'sky_zabbix/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "zab"
-  spec.version       = Zab::VERSION
+  spec.name          = "sky_zabbix"
+  spec.version       = SkyZabbix::VERSION
   spec.authors       = ["Masataka Kuwabara"]
   spec.email         = ["p.ck.t22@gmail.com"]
 

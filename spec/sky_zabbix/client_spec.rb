@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Zab::Client do
-  let(:client){Zab::Client.new(ZABBIX_URL)}
+describe SkyZabbix::Client do
+  let(:client){SkyZabbix::Client.new(ZABBIX_URL)}
 
   describe '.new' do
     it 'should not raise error' do
@@ -38,13 +38,13 @@ describe Zab::Client do
 
     it 'should not be able to get users' do
       logout
-      expect{client.user.get()}.to raise_error Zab::Jsonrpc::Error
+      expect{client.user.get()}.to raise_error SkyZabbix::Jsonrpc::Error
     end
   end
 
   describe '#batch' do
     let(:params){{user: ZABBIX_USER, password: ZABBIX_PASS}}
-    let(:user){Zab::Client.new(ZABBIX_URL).user}
+    let(:user){SkyZabbix::Client.new(ZABBIX_URL).user}
     let(:requests){[user.build_login(params), user.build_login(params)]}
     let(:batch){client.batch(*requests)}
 
@@ -52,7 +52,7 @@ describe Zab::Client do
       expect(batch.size).to eq requests.size
       batch.each do |resp|
         expect(resp).not_to be_nil
-        expect(resp).not_to be_a Zab::Jsonrpc::Error
+        expect(resp).not_to be_a SkyZabbix::Jsonrpc::Error
       end
     end
   end

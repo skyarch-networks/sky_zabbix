@@ -1,13 +1,13 @@
-# Zab
+# SkyZabbix
 
-Zab is a Zabbix API Wrapper written by Ruby.
+SkyZabbix is a Zabbix API Wrapper written by Ruby.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'zab'
+gem 'sky_zabbix'
 ```
 
 And then execute:
@@ -16,12 +16,12 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install zab
+    $ gem install sky_zabbix
 
 ## Usage
 
 ```ruby
-client = Zab.new(ZABBIX_URL)
+client = SkyZabbix.new(ZABBIX_URL)
 client.login(ZABBIX_USER, ZABBIX_PASS)
 
 client.host.get()
@@ -35,7 +35,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/zab/fork )
+1. Fork it ( https://github.com/[my-github-username]/sky_zabbix/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

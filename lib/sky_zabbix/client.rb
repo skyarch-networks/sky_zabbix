@@ -1,14 +1,14 @@
 # @example
-#   z = Zab::Client.new('http://example.com/zabbix/api_jsonrpc.php')
+#   z = SkyZabbix::Client.new('http://example.com/zabbix/api_jsonrpc.php')
 #   z.login('admin', 'zabbix')
 #   z.host.get
-class Zab::Client
+class SkyZabbix::Client
 
   # @param [String] uri is URI of Zabbix Server API endpoint.
   # @param [Logger] logger is a Logger.
   def initialize(uri, logger: nil)
     @uri = uri
-    @client = Zab::Jsonrpc.new(@uri, logger: logger)
+    @client = SkyZabbix::Jsonrpc.new(@uri, logger: logger)
   end
 
   # Login to Zabbix Server.

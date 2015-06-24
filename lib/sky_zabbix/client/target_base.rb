@@ -1,5 +1,5 @@
 # @abstract
-class Zab::Client::TargetBase
+class SkyZabbix::Client::TargetBase
   # @return [String]
   def self._zbx_class
     return @class
@@ -7,7 +7,7 @@ class Zab::Client::TargetBase
 
 
   # @param [String] uri is URI of Zabbix Server.
-  # @param [Zab::Jsonrpc] client
+  # @param [SkyZabbix::Jsonrpc] client
   def initialize(uri, client)
     raise "Should use method of sub class!" unless _zbx_class
     @uri = uri

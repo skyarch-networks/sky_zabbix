@@ -6,7 +6,7 @@ methods.each do |name, v|
   class_name = name[0].upcase + name[1..-1] # host => Host
 
   # Generate Class
-  Zab::Client.const_set(class_name, Class.new(Zab::Client::TargetBase) do |klass|
+  SkyZabbix::Client.const_set(class_name, Class.new(SkyZabbix::Client::TargetBase) do |klass|
     @class = name
 
     # TODO: getOptions
@@ -26,7 +26,7 @@ methods.each do |name, v|
 
     # Generate getter method.
     # Example: client.user
-    Zab::Client.__send__(:define_method, name) do
+    SkyZabbix::Client.__send__(:define_method, name) do
       klass.new(@url, @client)
     end
   end)

@@ -16,6 +16,6 @@ namespace :generate do
       puts err
       exit(1)
     end
-    File.write('lib/zab/methods.json', JSON.pretty_generate(JSON.parse(out)))
+    File.write('lib/sky_zabbix/methods.json', JSON.pretty_generate(JSON.parse(out)))
   end
 end

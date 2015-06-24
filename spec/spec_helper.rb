@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'pry'
-require 'zab'
+require 'sky_zabbix'
 
 ZABBIX_URL  = ENV["ZABBIX_URL"]
 ZABBIX_USER = ENV["ZABBIX_USER"]

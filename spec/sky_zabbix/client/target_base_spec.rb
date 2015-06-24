@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe Zab::Client::TargetBase do
+describe SkyZabbix::Client::TargetBase do
   describe '.new' do
     it 'should be abstract class' do
-      expect{Zab::Client::TargetBase.new(
+      expect{SkyZabbix::Client::TargetBase.new(
         ZABBIX_URL,
-        Zab::Jsonrpc.new(ZABBIX_URL)
+        SkyZabbix::Jsonrpc.new(ZABBIX_URL)
       )}.to raise_error
     end
   end
 end
 
-describe Zab::Client::User do
-  let(:user){Zab::Client.new(ZABBIX_URL).user}
+describe SkyZabbix::Client::User do
+  let(:user){SkyZabbix::Client.new(ZABBIX_URL).user}
 
   describe '#login' do
     it 'should be success' do

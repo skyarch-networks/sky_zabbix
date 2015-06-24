@@ -2,7 +2,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 
-class Zab::Jsonrpc
+class SkyZabbix::Jsonrpc
   VERSION = '2.0' # json-rpc version
 
   def initialize(uri, logger: nil)
@@ -129,7 +129,7 @@ class Zab::Jsonrpc
         "#{body[:method]}(#{body[:params]})"
       end
 
-    @logger.info("[Zab #{resp.code} #{sec}] #{msg_body}")
+    @logger.info("[SkyZabbix #{resp.code} #{sec}] #{msg_body}")
   end
 end
 

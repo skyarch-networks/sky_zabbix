@@ -1,4 +1,4 @@
-class Zab::Jsonrpc::Error < StandardError
+class SkyZabbix::Jsonrpc::Error < StandardError
   def initialize(body)
     @error = body['error']
     msg = "#{@error['message']} #{@error['data']}"

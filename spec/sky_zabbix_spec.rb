@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe Zab do
+describe SkyZabbix do
 end

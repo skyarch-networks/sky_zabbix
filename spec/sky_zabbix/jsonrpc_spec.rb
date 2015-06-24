@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Zab::Jsonrpc do
-  let(:client){Zab::Jsonrpc.new(ZABBIX_URL)}
+describe SkyZabbix::Jsonrpc do
+  let(:client){SkyZabbix::Jsonrpc.new(ZABBIX_URL)}
 
   describe '#post' do
     let(:params){{user: ZABBIX_USER, password: ZABBIX_PASS}}
@@ -22,7 +22,7 @@ describe Zab::Jsonrpc do
       let(:req){client.post('hogehoge.fugafdafs', params)}
 
       it 'should raise error' do
-        expect{req}.to raise_error(Zab::Jsonrpc::Error)
+        expect{req}.to raise_error(SkyZabbix::Jsonrpc::Error)
       end
     end
   end
@@ -70,7 +70,7 @@ describe Zab::Jsonrpc do
 
   describe '#logging_request' do
     let(:logger){Struct.new(:v){def info(msg);self.v = msg;end}.new}
-    let(:client){Zab::Jsonrpc.new(ZABBIX_URL, logger: logger)}
+    let(:client){SkyZabbix::Jsonrpc.new(ZABBIX_URL, logger: logger)}
     let(:params){{user: ZABBIX_USER, password: ZABBIX_PASS}}
     let(:method){'user.login'}
     let(:req){client.post(method, params)}
