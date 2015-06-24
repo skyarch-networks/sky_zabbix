@@ -6,7 +6,7 @@ methods.each do |name, v|
   class_name = name[0].upcase + name[1..-1] # host => Host
 
   # Generate Class
-  Zab::Client.const_set(class_name, Class.new(Zab::Client) do |klass|
+  Zab::Client.const_set(class_name, Class.new(Zab::Client::Resource) do |klass|
     @class = name
 
     # TODO: getOptions
@@ -14,13 +14,13 @@ methods.each do |name, v|
       # Generate query method.
       # Example: user.login()
       define_method(method) do |params|
-        query(method, params)
+        _query(method, params)
       end
 
       # Generate build method. For batch request
       # Example: user.build_login()
       define_method("build_#{method}") do |params|
-        build(method, params)
+        _build(method, params)
       end
     end
 
