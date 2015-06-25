@@ -25,8 +25,9 @@
  * @author      Skyarch Networks inc., confirm IT solutions GmbH, Rathausstrase 14, CH-6340 Baar
  */
 
-// Support Zabbix 2.4 or later.
 
+
+// helper functions
 function getProp($class, $prop_name) {
   $ref = new ReflectionClass($class);
   $refProp = new ReflectionProperty($class, $prop_name);
@@ -36,58 +37,125 @@ function getProp($class, $prop_name) {
   return $refProp->getValue($obj);
 }
 
+function assert_path($path, $name) {
+  if (is_dir($path) || file_exists($path)) { return; }
+
+  fputs(STDERR, 'ERROR: "' .$path. '" is not a directory! Please check the ' .$name);
+  die(1);
+}
+
+
+/*
+ * Define some pathes and do some sanity checks for existence of the pathes.
+ */
+
 define('PATH_ZABBIX', getenv('PATH_ZABBIX'));
+assert_path(PATH_ZABBIX, 'PATH_ZABBIX environment');
 
-if (!is_dir(PATH_ZABBIX)) {
-  fputs(STDERR, 'ERROR: Zabbix path "'.PATH_ZABBIX.'" is not a directory! Please check the PATH_ZABBIX environment.');
-  die(1);
-}
-
-
+// load Zabbix internal constants, to access ZABBIX_API_VERSION
 require PATH_ZABBIX . '/include/defines.inc.php';
+$is_2_4_or_later = version_compare(ZABBIX_API_VERSION, '2.4') >= 0 ;
 
-
+/**
+ * @brief   Path to the API.php class file of the Zabbix PHP front-end.
+ *
+ * This class file will be used, to determine all available API classes.
+ */
 define('PATH_ZABBIX_API_CLASS_FILE', PATH_ZABBIX.'/include/classes/api/API.php');
-if(!file_exists(PATH_ZABBIX_API_CLASS_FILE)) {
-  fputs(STDERR, 'ERROR: API class file "'.PATH_ZABBIX_API_CLASS_FILE.'" not found! Please check the PATH_ZABBIX_API_CLASS_FILE configuration constant');
-  die(1);
+assert_path(PATH_ZABBIX_API_CLASS_FILE, 'PATH_ZABBIX_API_CLASS_FILE');
+
+
+/**
+ * @brief   Path to the api/classes/ directory of the Zabbix PHP front-end.
+ *
+ * This directory and the contained class files will be used, to determine all
+ * available methods for each API class.
+ */
+if($is_2_4_or_later) {
+  define('PATH_ZABBIX_API_CLASSES_DIRECTORY', PATH_ZABBIX.'/include/classes/api/services');
+} else {
+  define('PATH_ZABBIX_API_CLASSES_DIRECTORY', PATH_ZABBIX.'/api/classes');
 }
 
-
-define('PATH_ZABBIX_API_CLASSES_DIRECTORY', PATH_ZABBIX.'/include/classes/api/services');
-if(!is_dir(PATH_ZABBIX_API_CLASSES_DIRECTORY)) {
-  fputs(STDERR, 'ERROR: API class directory "'.PATH_ZABBIX_API_CLASSES_DIRECTORY.'" not found!');
-  die(1);
-}
+assert_path(PATH_ZABBIX_API_CLASSES_DIRECTORY, 'PATH_ZABBIX_API_CLASSES_DIRECTORY');
 
 
+
+/*
+ * Create class-map class.
+ *
+ * Create a new class and extend it from the origin Zabbix classes, so that we
+ * can fetch the class map directly from the Zabbix classes without defining
+ * it here.
+ *
+ * There are some differences between the Zabbix versions:
+ *
+ *  < 2.4:  The class map is stored as a static property directly in the
+ *          origin API class.
+ *
+ *  >= 2.4: The class map is stored as an instance property in the
+ *          origin CApiServiceFactory class.
+ */
+
+// load API
 require PATH_ZABBIX_API_CLASS_FILE;
-require PATH_ZABBIX.'/include/classes/core/CRegistryFactory.php';
-require PATH_ZABBIX.'/include/classes/api/CApiServiceFactory.php';
-require PATH_ZABBIX.'/include/classes/api/CApiService.php';
+if ($is_2_4_or_later) {
+  require PATH_ZABBIX.'/include/classes/core/CRegistryFactory.php';
+  require PATH_ZABBIX.'/include/classes/api/CApiServiceFactory.php';
+  require PATH_ZABBIX.'/include/classes/api/CApiService.php';
 
 
-class ZabbixApiClassMap extends CApiServiceFactory {
-  public function getClassMap() {
-    $classMap = $this->objects;
-    return $classMap;
+  class ZabbixApiClassMap extends CApiServiceFactory {
+    public function getClassMap() {
+      $classMap = $this->objects;
+      return $classMap;
+    }
+  }
+} else {
+  require PATH_ZABBIX.'/include/classes/api/CZBXAPI.php';
+  class ZabbixApiClassMap extends API
+  {
+    public function getClassMap()
+    {
+      return self::$classMap;
+    }
   }
 }
 
+
+/*
+ * Register SPL autoloader.
+ *
+ * The API class files always inherit from other classes. Most of the classes
+ * inherit from the CZBXAPI class, but there are a bunch of classes which
+ * are extended by other API classes.
+ *
+ * So that we don't have to "follow" the right order on loading API class files,
+ * we're register an API autoloader right here.
+ *
+ * Later the get_class_methods() function will automatically invoke this
+ * autoloader.
+ */
 
 function __autoload($className) {
   require PATH_ZABBIX_API_CLASSES_DIRECTORY.'/'.$className.'.php';
 }
 
+// require needed files for get properteis.
 require PATH_ZABBIX.'/include/classes/db/DB.php';
 require PATH_ZABBIX.'/include/gettextwrapper.inc.php';
 require PATH_ZABBIX.'/include/events.inc.php';
 require PATH_ZABBIX.'/include/func.inc.php';
 
+// initialze API array
 $apiArray = array();
+// Create new instance for API class map.
 $apiClassMap = new ZabbixApiClassMap();
 
+// loop through class map
 foreach($apiClassMap->getClassMap() as $resource => $class) {
+  if ($class == 'CZBXAPI' || $class == 'CAPI' || $class == 'CApiService') { continue; }
+
   // add resource to API array
   $apiArray[$resource] = array();
 
@@ -101,18 +169,18 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   $apiArray[$resource]['methods'] = array();
   foreach($ref->getMethods(ReflectionMethod::IS_PUBLIC & ~ReflectionMethod::IS_STATIC) as $method) {
     // add action to API array
-    if( $method->class != 'CZBXAPI'
+    if(  $method->name != 'pk'
+      && $method->name != 'pkOption'
+      && $method->name != 'tableName'
       && !$method->isConstructor()
       && !$method->isDestructor()
       && !$method->isAbstract()
-      && !($method->name == 'pk')
-      && !($method->name == 'pkOption')
-      && !($method->name == 'tableName')
     ) {
       $apiArray[$resource]['methods'][] = $method->name;
     }
   }
 }
 
+// Output APIs.
 printf("%s\n", json_encode($apiArray));
 ?>
