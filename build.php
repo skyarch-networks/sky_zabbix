@@ -176,7 +176,7 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
       && !$method->isDestructor()
       && !$method->isAbstract()
     ) {
-      $apiArray[$resource]['methods'][] = $method->name;
+      $apiArray[$resource]['methods'][] = strtolower($method->name);
     }
   }
 }
