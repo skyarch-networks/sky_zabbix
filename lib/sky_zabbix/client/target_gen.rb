@@ -1,6 +1,6 @@
 require 'json'
 
-methods = JSON.parse(File.read(File.expand_path('../../methods.json', __FILE__)), symbolize_names: true)
+methods = JSON.parse(File.read(File.expand_path('../../methods.json', __FILE__)), symbolize_names: true)[:methods]
 
 methods.each do |name, v|
   class_name = name[0].upcase + name[1..-1] # host => Host

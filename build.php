@@ -181,6 +181,13 @@ foreach($apiClassMap->getClassMap() as $resource => $class) {
   }
 }
 
+$matches = array();
+preg_match("/^(\d+\.\d+)\..+$/", ZABBIX_API_VERSION, $matches);
+$version = $matches[1];
+
 // Output APIs.
-printf("%s\n", json_encode($apiArray));
+printf("%s\n", json_encode(array(
+  'methods' => $apiArray,
+  'version' => $version,
+)));
 ?>
