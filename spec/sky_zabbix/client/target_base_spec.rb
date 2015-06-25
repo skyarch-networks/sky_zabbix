@@ -31,9 +31,9 @@ describe SkyZabbix::Client::User do
     end
   end
 
-  describe 'get_id' do
+  describe '#get_ids' do
     let(:params){{alias: ZABBIX_USER}}
-    subject{user.get_id(params)}
+    subject{user.get_ids(params)}
 
     before do
       token = user.login(user: ZABBIX_USER, password: ZABBIX_PASS)
@@ -41,7 +41,12 @@ describe SkyZabbix::Client::User do
       user.instance_variable_get(:@client).token = token
     end
 
-    it {is_expected.to be_a String}
+    it {is_expected.to be_a Array}
+    it 'should be a Array of String' do
+      subject.each do |x|
+        expect(x).to be_a String
+      end
+    end
   end
 
   describe '#pk' do
