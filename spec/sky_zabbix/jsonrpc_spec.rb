@@ -28,18 +28,27 @@ describe SkyZabbix::Jsonrpc do
   end
 
   describe '#batch' do
-    let(:buildeds){[
+    let(:reqs){[
       client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
       client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}),
       client.build('user.login', {user: ZABBIX_USER, password: ZABBIX_PASS}, notification: true),
     ]}
 
-    let(:batch){client.batch(buildeds)}
+    let(:batch){client.batch(reqs)}
 
     it 'should be Array' do
       expect(batch).to be_a Array
 
-      expect(batch.size).to eq buildeds.size
+      expect(batch.size).to eq reqs.size
+    end
+
+    context 'when error' do
+      let(:err_reqs){reqs.push(client.build('invalid.as.method', {}))}
+      let(:batch){client.batch(err_reqs)}
+
+      it do
+        expect{batch}.to raise_error SkyZabbix::Jsonrpc::Error::BatchError
+      end
     end
   end
 

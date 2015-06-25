@@ -26,4 +26,25 @@ class SkyZabbix::Jsonrpc::Error < StandardError
       end
     klass.new(body)
   end
+
+  class BatchError < StandardError
+    # @param [Array<Error>] errors is list of error.
+    # @param [Array<Any>] result is list of response.
+    def initialize(errors, result)
+      @errors = errors
+      @result = result
+    end
+    attr_reader :errors, :result
+
+    # @return [String] error message
+    def message
+      return errors.map(&:message).join(', ')
+    end
+
+    # @param [Array<Hash<String => Any>] body is response body.
+    # @return [Boolean]
+    def self.error?(body)
+      return body.any?{|x|x['error']}
+    end
+  end
 end

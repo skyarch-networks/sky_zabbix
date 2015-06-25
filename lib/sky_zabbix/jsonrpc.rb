@@ -40,8 +40,15 @@ class SkyZabbix::Jsonrpc
   #   rpc.batch(
   #     rpc.build('a', 'A'),
   #     rpc.build('b', 'B', notification: true),
-  #     rpc.build('c', 'Invalid Param'),
-  #   ) # => [{value: 'response of A'}, nil, Jsonrpc::Error]
+  #     rpc.build('c', 'C'),
+  #   ) # => [{value: 'response of A'}, nil, {value: 'response of A'}]
+  # @example Raise error.
+  #   rpc.batch(
+  #     rpc.build('a', 'A'),
+  #     rpc.build('b', 'B', notification: true),
+  #     rpc.build('c', 'Invalid Params'),
+  #   ) # => Error::BatchError.
+  #   #  Can get response of 'a' from ex.result
   # @param [Array<Hash>] buildeds is Array of result of 'build' method.
   # @return [Array<Any|Error|nil>]
   def batch(buildeds)
@@ -50,6 +57,7 @@ class SkyZabbix::Jsonrpc
     body = JSON.parse(resp.body)
 
     result = []
+    errors = []
     buildeds.each do |b|
       id = b[:id]
       a = body.find{|x|x['id'] == id}
@@ -58,11 +66,16 @@ class SkyZabbix::Jsonrpc
         if a.nil?
           nil
         elsif a['error']
-          Error.new(a)
+          errors.push(Error.new(a))
+          nil
         else
           a['result']
         end
       result.push(r)
+    end
+
+    unless errors.empty?
+      raise Error::BatchError.new(errors, result)
     end
     return result
   end
