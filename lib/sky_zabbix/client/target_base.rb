@@ -24,6 +24,12 @@ class SkyZabbix::Client::TargetBase
     return _query('get', params).map{|x|x[pk]}
   end
 
+  # @param [Hash] filter
+  # @return [Array<String>] ID of founded first.
+  def get_id(filter)
+    return get_ids(filter).first
+  end
+
   private
   # @param [String] method is method name. ex) get, create, delete ...
   # @param [Any] params is parameters.

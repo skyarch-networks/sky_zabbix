@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'securerandom'
 
 describe SkyZabbix::Client::TargetBase do
   describe '.new' do
@@ -46,6 +47,24 @@ describe SkyZabbix::Client::User do
       subject.each do |x|
         expect(x).to be_a String
       end
+    end
+  end
+
+  describe '#get_id' do
+    let(:params){{alias: ZABBIX_USER}}
+    subject{user.get_id(params)}
+
+    before do
+      token = user.login(user: ZABBIX_USER, password: ZABBIX_PASS)
+      # TODO: Refactor
+      user.instance_variable_get(:@client).token = token
+    end
+
+    it{is_expected.to be_a String}
+
+    context 'when user not fonund' do
+      let(:params){{alias: "invalid as user name #{SecureRandom.hex(10)}"}}
+      it {is_expected.to be_nil}
     end
   end
 
