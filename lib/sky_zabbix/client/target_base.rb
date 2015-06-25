@@ -15,12 +15,15 @@ class SkyZabbix::Client::TargetBase
   end
 
   # @param [Hash] filter
+  # @return [String|nil] ID of filtered first ID.
   def get_id(filter)
     params = {
       filter: filter,
       output: 'extend',
     }
-    return _query('get', params).first[pk]
+    obj = _query('get', params).first
+    return nil unless obj
+    return obj[pk]
   end
 
   private
