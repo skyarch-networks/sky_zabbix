@@ -92,6 +92,20 @@ requests.push client.hostgroup.build_get()
 host_resp, user_resp, hostgroup_resp = cleint.batch(*requests)
 ```
 
+### Logger
+
+Don't log on default.
+If logger is received to constructor, SkyZabbix start logging.
+
+```ruby
+require 'logger'
+logger = Logger.new(STDOUT)
+client = SkyZabbix::Client.new(zabbix_url, logger: logger)
+client.login(zabbix_user, zabbix_pass)
+
+client.host.get()   # =>  I, [2015-06-29T17:35:19.609971 #3500]  INFO -- : [SkyZabbix 200 5.296144592] host.get({})
+```
+
 ## Development
 
 ### Building
