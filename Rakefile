@@ -10,7 +10,6 @@ RSpec::Core::RakeTask.new(:spec)
 task :default => :spec
 
 namespace :generate do
-  #TODO: clone zabbix/zabbix, version
   desc "Generate list of method"
   task :methods do |task, args|
     out, err, status = Open3.capture3("php", "build.php")

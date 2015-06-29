@@ -69,6 +69,7 @@ class SkyZabbix::Jsonrpc
   # @param [String] method is json-rpc method name.
   # @param [Any?] params is json-rpc parameters.
   # @param [Boolean] notification
+  # @return [Hash{Symbol => Any}]
   def build(method, params, notification: false)
     res = {
       jsonrpc: VERSION,
