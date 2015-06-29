@@ -1,4 +1,5 @@
 class SkyZabbix::Jsonrpc::Error < StandardError
+  # @param [Array<Hash{String => Any}>] body is response body.
   def initialize(body)
     @error = body['error']
     msg = "#{@error['message']} #{@error['data']}"
@@ -13,6 +14,8 @@ class SkyZabbix::Jsonrpc::Error < StandardError
   class InternalError  < self; end # Internal JSON-RPC error.
   class ServerError    < self; end # Reserved for implementation-defined server-errors.
 
+  # @param [Array<Hash{String => Any}>] body is response body.
+  # @return [Error] A Error instance.
   def self.create(body)
     klass =
       case body['code']
@@ -41,7 +44,7 @@ class SkyZabbix::Jsonrpc::Error < StandardError
       return errors.map(&:message).join(', ')
     end
 
-    # @param [Array<Hash<String => Any>] body is response body.
+    # @param [Array<Hash{String => Any}>] body is response body.
     # @return [Boolean]
     def self.error?(body)
       return body.any?{|x|x['error']}

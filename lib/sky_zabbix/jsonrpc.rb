@@ -12,6 +12,7 @@ class SkyZabbix::Jsonrpc
 
   attr_accessor :token
 
+  # Send normal request.
   # @param [String] method is json-rpc method name.
   # @param [Any?] params is json-rpc parameters.
   # @param [Boolean] notification
@@ -19,23 +20,7 @@ class SkyZabbix::Jsonrpc
     request(build(method, params, notification: notification))
   end
 
-  # @param [Hash{String => Any}] builded is result of 'build' method.
-  # @return [Any?] return result of response
-  def request(builded)
-    uri = URI.parse(@uri)
-
-    resp = do_req(uri, builded)
-
-    return nil unless builded[:id] # when notification
-
-    # Parse and error handling
-    body = JSON.parse(resp.body)
-    raise Error.create(body) if body['error']
-
-    return body['result']
-  end
-
-  # XXX: エラー処理はこれでいい?
+  # Send batch request.
   # @example Return values.
   #   rpc.batch(
   #     rpc.build('a', 'A'),
@@ -50,7 +35,8 @@ class SkyZabbix::Jsonrpc
   #   ) # => Error::BatchError.
   #   #  Can get response of 'a' from ex.result
   # @param [Array<Hash>] buildeds is Array of result of 'build' method.
-  # @return [Array<Any|Error|nil>]
+  # @return [Array<Any|nil>]
+  # @raise [Error::BatchError]
   def batch(buildeds)
     uri = URI.parse(@uri)
     resp = do_req(uri, buildeds)
@@ -97,6 +83,22 @@ class SkyZabbix::Jsonrpc
 
 
   private
+
+  # @param [Hash{String => Any}] builded is result of 'build' method.
+  # @return [Any?] return result of response
+  def request(builded)
+    uri = URI.parse(@uri)
+
+    resp = do_req(uri, builded)
+
+    return nil unless builded[:id] # when notification
+
+    # Parse and error handling
+    body = JSON.parse(resp.body)
+    raise Error.create(body) if body['error']
+
+    return body['result']
+  end
 
   # @return [Integer] random ID.
   def id_gen
