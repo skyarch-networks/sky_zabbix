@@ -93,6 +93,8 @@ host_resp, user_resp, hostgroup_resp = cleint.batch(*requests)
 
 ### Building
 
+Required PHP.
+
 Get [Zabbix](https://github.com/zabbix/zabbix) source code.
 
 ```sh
