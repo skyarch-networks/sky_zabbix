@@ -1,5 +1,8 @@
 # SkyZabbix
 
+[![Gem Version](https://badge.fury.io/rb/sky_zabbix.svg)](http://badge.fury.io/rb/sky_zabbix)
+[![Inline docs](http://inch-ci.org/github/skyarch-networks/sky_zabbix.svg?branch=master)](http://inch-ci.org/github/skyarch-networks/sky_zabbix)
+
 SkyZabbix is a Zabbix API Wrapper written by Ruby.
 
 ## Installation
