@@ -89,7 +89,7 @@ requests = []
 requests.push client.host.build_get()
 requests.push client.user.build_get()
 requests.push client.hostgroup.build_get()
-host_resp, user_resp, hostgroup_resp = cleint.batch(*requests)
+host_resp, user_resp, hostgroup_resp = client.batch(*requests)
 ```
 
 ### Logger
