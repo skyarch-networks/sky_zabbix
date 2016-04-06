@@ -134,7 +134,7 @@ class SkyZabbix::Jsonrpc
   # @param [Hash|Array] body is request body.
   # @param [Net::HTTPResponse] resp
   def logging_request(start_time, body, resp)
-    return unless @logger
+    return unless @logger && resp
 
     sec = Time.now - start_time
     msg_body =
